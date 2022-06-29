@@ -1,0 +1,48 @@
+@import "../../common/css/common";
+
+
+@blue-deep: #006FBB;
+@blue-lite: #008DCC;
+@orange-deep: #FFAE00;
+@orange-lite: #FFC900;
+@green: #A6AD00;
+@red: #F60400;
+
+@flipper-bg: #333;
+@flipper-fg: white;
+
+#countdown-comp {
+
+	.countdown-widget {
+		display: flex;
+		margin: auto;
+		background-color: #abc;
+		perspective: 300px;
+		[data-units] {
+			.flex-column;
+			align-items: center;
+			.couple {
+				display: flex;
+				.flipper {
+					width: .8em;
+					height: 1em;
+					background-color: #000;
+					border-radius: .08em;
+					overflow: hidden;
+					font-size: 100px;
+					line-height: 1;
+					color: white;
+					.flip {
+						text-align: center;
+						transform: rotateX(-45deg);
+						background-color: #333;
+					}
+				}
+			}
+			.label {
+				color: black;
+			}
+		}
+	}
+
+}
