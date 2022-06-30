@@ -266,6 +266,7 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
   transform: perspective(300px);
   border-radius: 0.08em 0.08em 0 0;
   transition: transform 0.25s ease-in;
+  box-shadow: inset 0 -0.2em 0.4em rgba(0, 0, 0, 0.5);
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:after {
   top: 50%;
@@ -275,6 +276,7 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
   transform: perspective(300px);
   border-radius: 0 0 0.08em 0.08em;
   transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: inset 0 0.2em 0.4em rgba(0, 0, 0, 0.5);
 }
 #countdown-comp .countdown-widget [data-units] .label {
   color: black;
