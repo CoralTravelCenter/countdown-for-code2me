@@ -56,3 +56,13 @@ window.DEBUG = 'APP NAME'
 
 ASAP ->
 
+    window.flipme2 = (stack_el, n) ->
+        $stack_el = $(stack_el)
+        $recent_flipper = $stack_el.children().eq(0)
+        $new_flipper = $ "<div class='flipper flip-in' data-digit='#{ n }'></div>"
+        $stack_el.append $new_flipper
+        $recent_flipper.one 'transitionend', (e) ->
+            $new_flipper.one 'transitionend', ->
+                $recent_flipper.remove()
+            .removeClass 'flip-in'
+        .addClass 'flip-out'

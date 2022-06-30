@@ -223,20 +223,58 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
 #countdown-comp .countdown-widget [data-units] .couple {
   display: flex;
 }
-#countdown-comp .countdown-widget [data-units] .couple .flipper {
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack {
+  position: relative;
+  font-size: 100px;
   width: 0.8em;
   height: 1em;
-  background-color: #000;
-  border-radius: 0.08em;
-  overflow: hidden;
-  font-size: 100px;
-  line-height: 1;
-  color: white;
 }
-#countdown-comp .countdown-widget [data-units] .couple .flipper .flip {
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  color: white;
+  margin: 0 1px;
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-out:before {
+  transform: perspective(300px) rotateX(-90deg);
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-in {
+  z-index: 0;
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-in:after {
+  transform: perspective(300px) rotateX(90deg);
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:before,
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:after {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  left: 0;
+  content: attr(data-digit);
   text-align: center;
-  transform: rotateX(-45deg);
   background-color: #333;
+  overflow: hidden;
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:before {
+  top: 0;
+  line-height: 1;
+  transform-origin: bottom;
+  transform: perspective(300px);
+  border-radius: 0.08em 0.08em 0 0;
+  transition: transform 0.25s ease-in;
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:after {
+  top: 50%;
+  line-height: 0;
+  margin-top: 1px;
+  transform-origin: top;
+  transform: perspective(300px);
+  border-radius: 0 0 0.08em 0.08em;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 #countdown-comp .countdown-widget [data-units] .label {
   color: black;

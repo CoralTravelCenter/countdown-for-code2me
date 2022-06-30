@@ -23,19 +23,58 @@
 			align-items: center;
 			.couple {
 				display: flex;
-				.flipper {
+				.flipper-stack {
+					position: relative;
+					font-size: 100px;
 					width: .8em;
 					height: 1em;
-					background-color: #000;
-					border-radius: .08em;
-					overflow: hidden;
-					font-size: 100px;
-					line-height: 1;
-					color: white;
-					.flip {
-						text-align: center;
-						transform: rotateX(-45deg);
-						background-color: #333;
+					.flipper {
+						.abs100x100;
+						z-index: 1;
+						color: white;
+						margin: 0 1px;
+						&.flip-out {
+							&:before {
+								transform: perspective(300px) rotateX(-90deg);
+							}
+						}
+						&.flip-in {
+							z-index: 0;
+							&:after {
+								transform: perspective(300px) rotateX(90deg);
+							}
+						}
+
+						&:before, &:after {
+							position: absolute;
+							width: 100%;
+							height: 50%;
+							left: 0;
+							content: attr(data-digit);
+							text-align: center;
+							background-color: #333;
+							overflow: hidden;
+						}
+
+						&:before {
+							top: 0;
+							line-height: 1;
+							transform-origin: bottom;
+							transform: perspective(300px);
+							border-radius: .08em .08em 0 0;
+							transition: transform .25s ease-in;
+						}
+
+						&:after {
+							top: 50%;
+							line-height: 0;
+							margin-top: 1px;
+							transform-origin: top;
+							transform: perspective(300px);
+							border-radius: 0 0 .08em .08em;
+							//transition: transform .25s ease-out;
+							transition: transform .25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+						}
 					}
 				}
 			}
