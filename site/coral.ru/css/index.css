@@ -216,6 +216,7 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 0.5em;
 }
 #countdown-comp .countdown-widget [data-units] > * {
   max-width: 100%;
@@ -228,6 +229,7 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
   font-size: 100px;
   width: 0.8em;
   height: 1em;
+  margin: 0 1px;
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper {
   position: absolute;
@@ -237,7 +239,6 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
   height: 100%;
   z-index: 1;
   color: white;
-  margin: 0 1px;
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-out:before {
   transform: perspective(300px) rotateX(-90deg);

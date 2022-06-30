@@ -52,9 +52,76 @@ String::zeroPad = (len, c) ->
     s + @
 Number::zeroPad = (len, c) -> String(@).zeroPad len, c
 
+Number::pluralForm = (root, suffix_list) ->
+    root + (if this >= 11 && this <= 14 then suffix_list[0] else suffix_list[this % 10]);
+Number::asDays = () ->
+    d = Math.floor(this)
+    d.pluralForm('д', ['ней', 'ень', 'ня', 'ня', 'ня', 'ней', 'ней', 'ней', 'ней', 'ней']).toLowerCase()
+Number::asHours = () ->
+    d = Math.floor(this)
+    d.pluralForm('час', ['ов', '', 'а', 'а', 'а', 'ов', 'ов', 'ов', 'ов', 'ов']).toLowerCase()
+Number::asMinutes = () ->
+    d = Math.floor(this)
+    d.pluralForm('минут', ['', 'а', 'ы', 'ы', 'ы', '', '', '', '', '']).toLowerCase()
+Number::asSeconds = () ->
+    d = Math.floor(this)
+    d.pluralForm('секунд', ['', 'а', 'ы', 'ы', 'ы', '', '', '', '', '']).toLowerCase()
+
+
 window.DEBUG = 'APP NAME'
 
 ASAP ->
+    do($ = window.jQuery, window) ->
+        class Flipdown
+            defaults:
+                momentX: moment().add({ d: 2 })
+
+            constructor: (el, options) ->
+                @options = $.extend({}, @defaults, options)
+                @$el = $(el)
+                @init()
+
+            init: () ->
+                @
+
+            tick: () ->
+                remains = moment.duration(@options.momentX.diff(moment()))
+                if remains.seconds <= 0
+                    @over()
+                    return @
+                @render remains
+
+            start: () ->
+                @rafh = requestAnimationFrame =>
+                    @tick()
+                @
+
+            stop: () ->
+                cancelAnimationFrame @rafh if @rafh
+                @
+
+            over: () ->
+                @stop()
+                @$el.trigger('time-is-up')
+                @
+
+            render: (remains) ->
+                @
+
+            # Define the plugin
+            $.fn.extend Flipdown: (option, args...) ->
+                @each ->
+                    $this = $(this)
+                    data = $this.data('Flipdown')
+                    if !data
+                        $this.data 'Flipdown', (data = new Flipdown(this, option))
+                    if typeof option == 'string'
+                        data[option].apply(data, args)
+
+
+ASAP ->
+
+    $('.countdown-widget').Flipdown()
 
     window.flipme2 = (stack_el, n) ->
         $stack_el = $(stack_el)
