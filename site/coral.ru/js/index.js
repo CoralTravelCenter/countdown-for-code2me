@@ -1,7 +1,7 @@
-var log, queryParam, trouble,
+var queryParam,
   slice = [].slice;
 
-window.ASAP = (function() {
+window.ASAP || (window.ASAP = (function() {
   var callall, fns;
   fns = [];
   callall = function() {
@@ -25,9 +25,9 @@ window.ASAP = (function() {
       return callall();
     }
   };
-})();
+})());
 
-log = function() {
+window.log || (window.log = function() {
   if (window.console && window.DEBUG) {
     if (typeof console.group === "function") {
       console.group(window.DEBUG);
@@ -39,9 +39,9 @@ log = function() {
     }
     return typeof console.groupEnd === "function" ? console.groupEnd() : void 0;
   }
-};
+});
 
-trouble = function() {
+window.trouble || (window.trouble = function() {
   var ref;
   if (window.console) {
     if (window.DEBUG) {
@@ -56,9 +56,9 @@ trouble = function() {
       return typeof console.groupEnd === "function" ? console.groupEnd() : void 0;
     }
   }
-};
+});
 
-window.preload = function(what, fn) {
+window.preload || (window.preload = function(what, fn) {
   var lib;
   if (!Array.isArray(what)) {
     what = [what];
@@ -77,9 +77,9 @@ window.preload = function(what, fn) {
   })()).done(function() {
     return typeof fn === "function" ? fn() : void 0;
   });
-};
+});
 
-window.queryParam = queryParam = function(p, nocase) {
+window.queryParam || (window.queryParam = queryParam = function(p, nocase) {
   var k, params, params_kv;
   params_kv = location.search.substr(1).split('&');
   params = {};
@@ -101,7 +101,7 @@ window.queryParam = queryParam = function(p, nocase) {
     }
   }
   return params;
-};
+});
 
 String.prototype.zeroPad = function(len, c) {
   var s;
@@ -126,28 +126,26 @@ Number.prototype.pluralForm = function(root, suffix_list) {
 Number.prototype.asDays = function() {
   var d;
   d = Math.floor(this);
-  return d.pluralForm('д', ['ней', 'ень', 'ня', 'ня', 'ня', 'ней', 'ней', 'ней', 'ней', 'ней']).toLowerCase();
+  return d.pluralForm('д', ['ней', 'ень', 'ня', 'ня', 'ня', 'ней', 'ней', 'ней', 'ней', 'ней']);
 };
 
 Number.prototype.asHours = function() {
   var d;
   d = Math.floor(this);
-  return d.pluralForm('час', ['ов', '', 'а', 'а', 'а', 'ов', 'ов', 'ов', 'ов', 'ов']).toLowerCase();
+  return d.pluralForm('час', ['ов', '', 'а', 'а', 'а', 'ов', 'ов', 'ов', 'ов', 'ов']);
 };
 
 Number.prototype.asMinutes = function() {
   var d;
   d = Math.floor(this);
-  return d.pluralForm('минут', ['', 'а', 'ы', 'ы', 'ы', '', '', '', '', '']).toLowerCase();
+  return d.pluralForm('минут', ['', 'а', 'ы', 'ы', 'ы', '', '', '', '', '']);
 };
 
 Number.prototype.asSeconds = function() {
   var d;
   d = Math.floor(this);
-  return d.pluralForm('секунд', ['', 'а', 'ы', 'ы', 'ы', '', '', '', '', '']).toLowerCase();
+  return d.pluralForm('секунд', ['', 'а', 'ы', 'ы', 'ы', '', '', '', '', '']);
 };
-
-window.DEBUG = 'APP NAME';
 
 ASAP(function() {
   return (function($, window) {
@@ -156,7 +154,8 @@ ASAP(function() {
       Flipdown.prototype.defaults = {
         momentX: moment().add({
           d: 2
-        })
+        }),
+        labels: true
       };
 
       function Flipdown(el, options) {
@@ -172,20 +171,21 @@ ASAP(function() {
       Flipdown.prototype.tick = function() {
         var remains;
         remains = moment.duration(this.options.momentX.diff(moment()));
-        if (remains.seconds <= 0) {
+        if (remains.seconds() < 0) {
           this.over();
           return this;
         }
-        return this.render(remains);
-      };
-
-      Flipdown.prototype.start = function() {
+        this.render(remains);
         this.rafh = requestAnimationFrame((function(_this) {
           return function() {
             return _this.tick();
           };
         })(this));
         return this;
+      };
+
+      Flipdown.prototype.start = function() {
+        return this.tick();
       };
 
       Flipdown.prototype.stop = function() {
@@ -202,7 +202,52 @@ ASAP(function() {
       };
 
       Flipdown.prototype.render = function(remains) {
+        var hit_non_zero_rank;
+        hit_non_zero_rank = false;
+        this.$el.find('[data-units]').each((function(_this) {
+          return function(idx, el) {
+            var $stacks, $units, digits2set, units, value, value2set;
+            $units = $(el);
+            units = $units.attr('data-units');
+            value = Number($units.attr('data-value'));
+            value2set = remains[units]();
+            hit_non_zero_rank || (hit_non_zero_rank = value2set !== 0);
+            if (!hit_non_zero_rank) {
+              $units.addClass('insignificant');
+            }
+            if (value2set !== value) {
+              $units.attr('data-value', value2set);
+              digits2set = value2set.zeroPad(2);
+              $stacks = $units.find('.flipper-stack');
+              _this.flipStack2($stacks.eq(0), digits2set[0]);
+              _this.flipStack2($stacks.eq(1), digits2set[1]);
+              if (_this.options.labels) {
+                return $units.find('.label').text(value2set[{
+                  days: 'asDays',
+                  hours: 'asHours',
+                  minutes: 'asMinutes',
+                  seconds: 'asSeconds'
+                }[units]]());
+              }
+            }
+          };
+        })(this));
         return this;
+      };
+
+      Flipdown.prototype.flipStack2 = function(stack_el, n) {
+        var $new_flipper, $recent_flipper, $stack_el;
+        $stack_el = $(stack_el);
+        if ($stack_el.find('.flipper:first').attr('data-digit') !== String(n)) {
+          $recent_flipper = $stack_el.children().eq(0);
+          $new_flipper = $("<div class='flipper flip-in' data-digit='" + n + "'></div>");
+          $stack_el.append($new_flipper);
+          return $recent_flipper.one('transitionend', function(e) {
+            return $new_flipper.one('transitionend', function() {
+              return $recent_flipper.remove();
+            }).removeClass('flip-in');
+          }).addClass('flip-out');
+        }
       };
 
       $.fn.extend({
@@ -230,7 +275,10 @@ ASAP(function() {
 });
 
 ASAP(function() {
-  $('.countdown-widget').Flipdown();
+  window.$countdown = $('.countdown-widget').Flipdown();
+  $countdown.on('time-is-up', function() {
+    return alert('OVER');
+  }).Flipdown('start');
   return window.flipme2 = function(stack_el, n) {
     var $new_flipper, $recent_flipper, $stack_el;
     $stack_el = $(stack_el);

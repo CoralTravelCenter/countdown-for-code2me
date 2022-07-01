@@ -209,7 +209,6 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
 #countdown-comp .countdown-widget {
   display: flex;
   margin: auto;
-  background-color: #abc;
   perspective: 300px;
 }
 #countdown-comp .countdown-widget [data-units] {
@@ -220,6 +219,9 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
 }
 #countdown-comp .countdown-widget [data-units] > * {
   max-width: 100%;
+}
+#countdown-comp .countdown-widget [data-units].insignificant:not(.always-visible) {
+  display: none!important;
 }
 #countdown-comp .countdown-widget [data-units] .couple {
   display: flex;
@@ -238,7 +240,7 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
   width: 100%;
   height: 100%;
   z-index: 1;
-  color: white;
+  color: #008DCC;
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-out:before {
   transform: perspective(300px) rotateX(-90deg);
@@ -257,7 +259,7 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
   left: 0;
   content: attr(data-digit);
   text-align: center;
-  background-color: #333;
+  background-color: #006FBB;
   overflow: hidden;
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:before {
@@ -267,7 +269,7 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
   transform: perspective(300px);
   border-radius: 0.08em 0.08em 0 0;
   transition: transform 0.25s ease-in;
-  box-shadow: inset 0 -0.2em 0.4em rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 -0.2em 0.4em rgba(0, 0, 0, 0.4);
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:after {
   top: 50%;
@@ -281,4 +283,6 @@ body > div.contentLayout-BaseContainer > div.notcritical > div > div:nth-child(2
 }
 #countdown-comp .countdown-widget [data-units] .label {
   color: black;
+  font-weight: normal;
+  margin-top: 1em;
 }
