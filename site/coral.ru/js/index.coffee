@@ -89,11 +89,12 @@ ASAP ->
                     @over()
                     return @
                 @render remains
-                @rafh = requestAnimationFrame =>
-                    @tick()
+                @rafh = requestAnimationFrame => @tick()
                 @
 
-            start: () -> @tick()
+            start: () ->
+                @rafh = requestAnimationFrame => @tick()
+                @
 
             stop: () ->
                 cancelAnimationFrame @rafh if @rafh

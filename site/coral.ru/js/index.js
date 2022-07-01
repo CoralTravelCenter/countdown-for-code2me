@@ -186,7 +186,12 @@ ASAP(function() {
       };
 
       Flipdown.prototype.start = function() {
-        return this.tick();
+        this.rafh = requestAnimationFrame((function(_this) {
+          return function() {
+            return _this.tick();
+          };
+        })(this));
+        return this;
       };
 
       Flipdown.prototype.stop = function() {
