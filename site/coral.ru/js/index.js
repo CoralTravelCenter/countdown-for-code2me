@@ -155,7 +155,8 @@ ASAP(function() {
         momentX: moment().add({
           d: 2
         }),
-        labels: true
+        labels: true,
+        overMessage: ''
       };
 
       function Flipdown(el, options) {
@@ -171,7 +172,7 @@ ASAP(function() {
       Flipdown.prototype.tick = function() {
         var remains;
         remains = moment.duration(this.options.momentX.diff(moment()));
-        if (remains.seconds() < 0) {
+        if (remains.asSeconds() <= 0) {
           this.over();
           return this;
         }
@@ -196,7 +197,28 @@ ASAP(function() {
       };
 
       Flipdown.prototype.over = function() {
+        var msg_letters;
         this.stop();
+        if (this.options.overMessage) {
+          msg_letters = this.options.overMessage.split('');
+          this.render({
+            days: function() {
+              return (msg_letters[0] || ' ') + (msg_letters[1] || ' ');
+            },
+            hours: function() {
+              return (msg_letters[2] || ' ') + (msg_letters[3] || ' ');
+            },
+            minutes: function() {
+              return (msg_letters[4] || ' ') + (msg_letters[5] || ' ');
+            },
+            seconds: function() {
+              return (msg_letters[6] || ' ') + (msg_letters[7] || ' ');
+            }
+          });
+          this.$el.find('.label').css({
+            visibility: 'hidden'
+          });
+        }
         this.$el.trigger('time-is-up');
         return this;
       };
@@ -221,14 +243,16 @@ ASAP(function() {
               $stacks = $units.find('.flipper-stack');
               _this.flipStack2($stacks.eq(0), digits2set[0]);
               _this.flipStack2($stacks.eq(1), digits2set[1]);
-              if (_this.options.labels) {
-                return $units.find('.label').text(value2set[{
-                  days: 'asDays',
-                  hours: 'asHours',
-                  minutes: 'asMinutes',
-                  seconds: 'asSeconds'
-                }[units]]());
-              }
+              try {
+                if (_this.options.labels) {
+                  return $units.find('.label').text(value2set[{
+                    days: 'asDays',
+                    hours: 'asHours',
+                    minutes: 'asMinutes',
+                    seconds: 'asSeconds'
+                  }[units]]());
+                }
+              } catch (error) {}
             }
           };
         })(this));
@@ -275,20 +299,13 @@ ASAP(function() {
 });
 
 ASAP(function() {
-  window.$countdown = $('.countdown-widget').Flipdown();
-  $countdown.on('time-is-up', function() {
-    return alert('OVER');
+  window.$countdown = $('.countdown-widget').Flipdown({
+    momentX: moment().add({
+      s: 10
+    }),
+    overMessage: 'ОКОНЧЕНА'
+  });
+  return $countdown.on('time-is-up', function() {
+    return 1;
   }).Flipdown('start');
-  return window.flipme2 = function(stack_el, n) {
-    var $new_flipper, $recent_flipper, $stack_el;
-    $stack_el = $(stack_el);
-    $recent_flipper = $stack_el.children().eq(0);
-    $new_flipper = $("<div class='flipper flip-in' data-digit='" + n + "'></div>");
-    $stack_el.append($new_flipper);
-    return $recent_flipper.one('transitionend', function(e) {
-      return $new_flipper.one('transitionend', function() {
-        return $recent_flipper.remove();
-      }).removeClass('flip-in');
-    }).addClass('flip-out');
-  };
 });

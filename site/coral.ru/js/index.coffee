@@ -74,6 +74,7 @@ ASAP ->
             defaults:
                 momentX: moment().add({ d: 2 })
                 labels: yes
+                overMessage: ''
 
             constructor: (el, options) ->
                 @options = $.extend({}, @defaults, options)
@@ -84,7 +85,7 @@ ASAP ->
 
             tick: () ->
                 remains = moment.duration(@options.momentX.diff(moment()))
-                if remains.seconds() < 0
+                if remains.asSeconds() <= 0
                     @over()
                     return @
                 @render remains
@@ -100,6 +101,14 @@ ASAP ->
 
             over: () ->
                 @stop()
+                if @options.overMessage
+                    msg_letters = @options.overMessage.split ''
+                    @render
+                        days: -> (msg_letters[0] or ' ') + (msg_letters[1] or ' ')
+                        hours: -> (msg_letters[2] or ' ') + (msg_letters[3] or ' ')
+                        minutes: -> (msg_letters[4] or ' ') + (msg_letters[5] or ' ')
+                        seconds: -> (msg_letters[6] or ' ') + (msg_letters[7] or ' ')
+                    @$el.find('.label').css visibility: 'hidden'
                 @$el.trigger('time-is-up')
                 @
 
@@ -118,12 +127,13 @@ ASAP ->
                         $stacks = $units.find('.flipper-stack')
                         @flipStack2 $stacks.eq(0), digits2set[0]
                         @flipStack2 $stacks.eq(1), digits2set[1]
-                        $units.find('.label').text value2set[{
-                            days: 'asDays',
-                            hours: 'asHours',
-                            minutes: 'asMinutes',
-                            seconds: 'asSeconds'
-                        }[units]]() if @options.labels
+                        try
+                            $units.find('.label').text value2set[{
+                                days: 'asDays',
+                                hours: 'asHours',
+                                minutes: 'asMinutes',
+                                seconds: 'asSeconds'
+                            }[units]]() if @options.labels
                 @
 
             flipStack2: (stack_el, n) ->
@@ -151,18 +161,9 @@ ASAP ->
 
 
 ASAP ->
-    window.$countdown = $('.countdown-widget').Flipdown()
+    window.$countdown = $('.countdown-widget').Flipdown
+        momentX: moment().add(s:10)
+        overMessage: 'ОКОНЧЕНА'
     $countdown.on 'time-is-up', ->
-        alert 'OVER'
+        1
     .Flipdown('start')
-
-    window.flipme2 = (stack_el, n) ->
-        $stack_el = $(stack_el)
-        $recent_flipper = $stack_el.children().eq(0)
-        $new_flipper = $ "<div class='flipper flip-in' data-digit='#{ n }'></div>"
-        $stack_el.append $new_flipper
-        $recent_flipper.one 'transitionend', (e) ->
-            $new_flipper.one 'transitionend', ->
-                $recent_flipper.remove()
-            .removeClass 'flip-in'
-        .addClass 'flip-out'
