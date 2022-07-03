@@ -88,8 +88,8 @@ ASAP ->
                 if remains.asSeconds() <= 0
                     @over()
                     return @
-                @render remains
-                @rafh = requestAnimationFrame => @tick()
+                @render(remains).then =>
+                    @rafh = requestAnimationFrame => @tick()
                 @
 
             start: () ->
@@ -109,12 +109,15 @@ ASAP ->
                         hours: -> (msg_letters[2] or ' ') + (msg_letters[3] or ' ')
                         minutes: -> (msg_letters[4] or ' ') + (msg_letters[5] or ' ')
                         seconds: -> (msg_letters[6] or ' ') + (msg_letters[7] or ' ')
+                    .then => @$el.trigger('time-is-up')
                     @$el.find('.label').css visibility: 'hidden'
-                @$el.trigger('time-is-up')
+                else
+                    @$el.trigger('time-is-up')
                 @
 
             render: (remains) ->
                 hit_non_zero_rank = false
+                promise = $.Deferred()
                 @$el.find('[data-units]').each (idx, el) =>
                     $units = $(el)
                     units = $units.attr('data-units')
@@ -126,8 +129,7 @@ ASAP ->
                         $units.attr 'data-value', value2set
                         digits2set = value2set.zeroPad(2)
                         $stacks = $units.find('.flipper-stack')
-                        @flipStack2 $stacks.eq(0), digits2set[0]
-                        @flipStack2 $stacks.eq(1), digits2set[1]
+                        $.when(@flipStack2($stacks.eq(0), digits2set[0]), @flipStack2($stacks.eq(1), digits2set[1])).then -> promise.resolve()
                         try
                             $units.find('.label').text value2set[{
                                 days: 'asDays',
@@ -135,10 +137,13 @@ ASAP ->
                                 minutes: 'asMinutes',
                                 seconds: 'asSeconds'
                             }[units]]() if @options.labels
-                @
+                    else
+                        promise.resolve()
+                promise
 
             flipStack2: (stack_el, n) ->
                 $stack_el = $(stack_el)
+                promise = $.Deferred()
                 if $stack_el.find('.flipper:first').attr('data-digit') != String(n)
                     $recent_flipper = $stack_el.children().eq(0)
                     $new_flipper = $ "<div class='flipper flip-in' data-digit='#{ n }'></div>"
@@ -146,9 +151,12 @@ ASAP ->
                     $recent_flipper.one 'transitionend', (e) ->
                         $new_flipper.one 'transitionend', ->
                             $recent_flipper.remove()
+                            promise.resolve()
                         .removeClass 'flip-in'
                     .addClass 'flip-out'
-
+                else
+                    promise.resolve()
+                promise
 
             # Define the plugin
             $.fn.extend Flipdown: (option, args...) ->

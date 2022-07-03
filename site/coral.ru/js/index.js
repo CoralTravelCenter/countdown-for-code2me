@@ -176,10 +176,11 @@ ASAP(function() {
           this.over();
           return this;
         }
-        this.render(remains);
-        this.rafh = requestAnimationFrame((function(_this) {
+        this.render(remains).then((function(_this) {
           return function() {
-            return _this.tick();
+            return _this.rafh = requestAnimationFrame(function() {
+              return _this.tick();
+            });
           };
         })(this));
         return this;
@@ -219,18 +220,24 @@ ASAP(function() {
             seconds: function() {
               return (msg_letters[6] || ' ') + (msg_letters[7] || ' ');
             }
-          });
+          }).then((function(_this) {
+            return function() {
+              return _this.$el.trigger('time-is-up');
+            };
+          })(this));
           this.$el.find('.label').css({
             visibility: 'hidden'
           });
+        } else {
+          this.$el.trigger('time-is-up');
         }
-        this.$el.trigger('time-is-up');
         return this;
       };
 
       Flipdown.prototype.render = function(remains) {
-        var hit_non_zero_rank;
+        var hit_non_zero_rank, promise;
         hit_non_zero_rank = false;
+        promise = $.Deferred();
         this.$el.find('[data-units]').each((function(_this) {
           return function(idx, el) {
             var $stacks, $units, digits2set, units, value, value2set;
@@ -246,8 +253,9 @@ ASAP(function() {
               $units.attr('data-value', value2set);
               digits2set = value2set.zeroPad(2);
               $stacks = $units.find('.flipper-stack');
-              _this.flipStack2($stacks.eq(0), digits2set[0]);
-              _this.flipStack2($stacks.eq(1), digits2set[1]);
+              $.when(_this.flipStack2($stacks.eq(0), digits2set[0]), _this.flipStack2($stacks.eq(1), digits2set[1])).then(function() {
+                return promise.resolve();
+              });
               try {
                 if (_this.options.labels) {
                   return $units.find('.label').text(value2set[{
@@ -258,25 +266,32 @@ ASAP(function() {
                   }[units]]());
                 }
               } catch (error) {}
+            } else {
+              return promise.resolve();
             }
           };
         })(this));
-        return this;
+        return promise;
       };
 
       Flipdown.prototype.flipStack2 = function(stack_el, n) {
-        var $new_flipper, $recent_flipper, $stack_el;
+        var $new_flipper, $recent_flipper, $stack_el, promise;
         $stack_el = $(stack_el);
+        promise = $.Deferred();
         if ($stack_el.find('.flipper:first').attr('data-digit') !== String(n)) {
           $recent_flipper = $stack_el.children().eq(0);
           $new_flipper = $("<div class='flipper flip-in' data-digit='" + n + "'></div>");
           $stack_el.append($new_flipper);
-          return $recent_flipper.one('transitionend', function(e) {
+          $recent_flipper.one('transitionend', function(e) {
             return $new_flipper.one('transitionend', function() {
-              return $recent_flipper.remove();
+              $recent_flipper.remove();
+              return promise.resolve();
             }).removeClass('flip-in');
           }).addClass('flip-out');
+        } else {
+          promise.resolve();
         }
+        return promise;
       };
 
       $.fn.extend({
