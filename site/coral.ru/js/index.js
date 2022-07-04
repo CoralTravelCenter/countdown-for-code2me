@@ -203,10 +203,14 @@ ASAP(function() {
       };
 
       Flipdown.prototype.over = function() {
-        var msg_letters;
+        var msg_letters, pad;
         this.stop();
         if (this.options.overMessage) {
           msg_letters = this.options.overMessage.split('');
+          pad = 8 - msg_letters.length;
+          while (pad--) {
+            msg_letters.unshift(' ');
+          }
           this.render({
             days: function() {
               return (msg_letters[0] || ' ') + (msg_letters[1] || ' ');
@@ -319,12 +323,7 @@ ASAP(function() {
 });
 
 ASAP(function() {
-  window.$countdown = $('.countdown-widget').Flipdown({
-    momentX: moment().add({
-      s: 10
-    }),
-    overMessage: 'ОКОНЧЕНА'
-  });
+  window.$countdown = $('.countdown-widget').Flipdown();
   return $countdown.on('time-is-up', function() {
     return 1;
   }).Flipdown('start');

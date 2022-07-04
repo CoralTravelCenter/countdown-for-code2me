@@ -104,6 +104,8 @@ ASAP ->
                 @stop()
                 if @options.overMessage
                     msg_letters = @options.overMessage.split ''
+                    pad = 8 - msg_letters.length
+                    msg_letters.unshift ' ' while pad--
                     @render
                         days: -> (msg_letters[0] or ' ') + (msg_letters[1] or ' ')
                         hours: -> (msg_letters[2] or ' ') + (msg_letters[3] or ' ')
@@ -170,9 +172,9 @@ ASAP ->
 
 
 ASAP ->
-    window.$countdown = $('.countdown-widget').Flipdown
-        momentX: moment().add(s:10)
-        overMessage: 'ОКОНЧЕНА'
+    window.$countdown = $('.countdown-widget').Flipdown()
+#        momentX: moment().add(s:10)
+#        overMessage: 'ВСЕ!'
     $countdown.on 'time-is-up', ->
         1
     .Flipdown('start')
