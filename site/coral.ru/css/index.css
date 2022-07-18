@@ -91,13 +91,13 @@
   transform: translateZ(0);
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-out:before {
-  transform: perspective(300px) rotateX(-90deg);
+  transform: perspective(300px) rotateX(-90deg) translateZ(0);
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-in {
   z-index: 0;
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-in:after {
-  transform: perspective(300px) rotateX(90deg);
+  transform: perspective(300px) rotateX(90deg) translateZ(0);
 }
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:before,
 #countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:after {
