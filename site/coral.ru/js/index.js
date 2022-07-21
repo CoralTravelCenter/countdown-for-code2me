@@ -279,16 +279,17 @@ ASAP(function() {
       };
 
       Flipdown.prototype.flipStack2 = function(stack_el, n) {
-        var $new_flipper, $recent_flipper, $stack_el, promise;
+        var $last_flipper, $new_flipper, $recent_flippers, $stack_el, promise;
         $stack_el = $(stack_el);
         promise = $.Deferred();
-        if ($stack_el.find('.flipper:first').attr('data-digit') !== String(n)) {
-          $recent_flipper = $stack_el.children().eq(0);
+        $recent_flippers = $stack_el.children();
+        $last_flipper = $recent_flippers.eq(-1);
+        if ($last_flipper.attr('data-digit') !== String(n)) {
           $new_flipper = $("<div class='flipper flip-in' data-digit='" + n + "'></div>");
           $stack_el.append($new_flipper);
-          $recent_flipper.one('transitionend', function(e) {
-            return $new_flipper.one('transitionend', function() {
-              $recent_flipper.remove();
+          $last_flipper.one('transitionend transitioncancel', function(e) {
+            return $new_flipper.one('transitionend transitioncancel', function() {
+              $recent_flippers.remove();
               return promise.resolve();
             }).removeClass('flip-in');
           }).addClass('flip-out');

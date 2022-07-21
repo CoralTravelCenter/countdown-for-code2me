@@ -146,13 +146,14 @@ ASAP ->
             flipStack2: (stack_el, n) ->
                 $stack_el = $(stack_el)
                 promise = $.Deferred()
-                if $stack_el.find('.flipper:first').attr('data-digit') != String(n)
-                    $recent_flipper = $stack_el.children().eq(0)
+                $recent_flippers = $stack_el.children()
+                $last_flipper = $recent_flippers.eq(-1)
+                if $last_flipper.attr('data-digit') != String(n)
                     $new_flipper = $ "<div class='flipper flip-in' data-digit='#{ n }'></div>"
                     $stack_el.append $new_flipper
-                    $recent_flipper.one 'transitionend', (e) ->
-                        $new_flipper.one 'transitionend', ->
-                            $recent_flipper.remove()
+                    $last_flipper.one 'transitionend transitioncancel', (e) ->
+                        $new_flipper.one 'transitionend transitioncancel', ->
+                            $recent_flippers.remove()
                             promise.resolve()
                         .removeClass 'flip-in'
                     .addClass 'flip-out'
