@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"  crossorigin="anonymous" referrerpolicy="no-referrer"></script></head>
+<body>
+<style type="text/css">
+* {
+    font-family: sans-serif;
+    font-weight: bold;
+}
+@media screen and (max-width: 768px) {
+    .hidden-on-mobile {
+        display: none !important;
+    }
+}
+@media screen and (min-width: 769px) {
+    .hidden-on-desktop {
+        display: none !important;
+    }
+}
+.rur:not(:empty):after {
+    content: ' \20BD ';
+}
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#countdown-comp {
+    max-width: 1370px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+#countdown-comp > * {
+    max-width: 100%;
+}
+#countdown-comp h2,
+#countdown-comp h3 {
+    margin: 0 auto;
+}
+#countdown-comp > *:nth-child(n+2) {
+    margin-top: 3%!important;
+}
+@media screen and (max-width: 768px) {
+    #countdown-comp > *:nth-child(n+2) {
+        margin-top: 5%;
+    }
+}
+#countdown-comp .countdown-widget {
+    display: flex;
+    margin: auto;
+}
+#countdown-comp .countdown-widget [data-units] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 0.5em;
+}
+#countdown-comp .countdown-widget [data-units] > * {
+    max-width: 100%;
+}
+#countdown-comp .countdown-widget [data-units].insignificant:not(.always-visible) {
+    display: none!important;
+}
+#countdown-comp .countdown-widget [data-units] .couple {
+    display: flex;
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack {
+    position: relative;
+    width: 0.8em;
+    height: 1em;
+    margin: 0 1px;
+    font-size: 9vw;
+}
+@media screen and (min-width: 1440px) {
+    #countdown-comp .countdown-widget [data-units] .couple .flipper-stack {
+        font-size: 129.6px;
+    }
+}
+@media screen and (max-width: 768px) {
+    #countdown-comp .countdown-widget [data-units] .couple .flipper-stack {
+        font-size: 10vw;
+    }
+}
+@media screen and (max-width: 576px) {
+    #countdown-comp .countdown-widget [data-units] .couple .flipper-stack {
+        font-size: 11vw;
+    }
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    color: #008DCC;
+    transform: translateZ(0);
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-out:before {
+    transform: perspective(300px) rotateX(-90deg) translateZ(0);
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-in {
+    z-index: 0;
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper.flip-in:after {
+    transform: perspective(300px) rotateX(90deg) translateZ(0);
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:before,
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:after {
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    left: 0;
+    content: attr(data-digit);
+    text-align: center;
+    background-color: #006FBB;
+    overflow: hidden;
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:before {
+    top: 0;
+    line-height: 1;
+    transform-origin: bottom;
+    transform: perspective(300px);
+    border-radius: 0.08em 0.08em 0 0;
+    transition: transform 0.25s ease-in;
+    box-shadow: inset 0 -0.2em 0.4em rgba(0, 0, 0, 0.4);
+}
+#countdown-comp .countdown-widget [data-units] .couple .flipper-stack .flipper:after {
+    top: 50%;
+    line-height: 0;
+    margin-top: 1px;
+    transform-origin: top;
+    transform: perspective(300px);
+    border-radius: 0 0 0.08em 0.08em;
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: inset 0 0.2em 0.4em rgba(0, 0, 0, 0.5);
+}
+#countdown-comp .countdown-widget [data-units] .label {
+    color: black;
+    font-weight: normal;
+    margin-top: 1em;
+}
+
+</style>
+
+
+
+<div id="countdown-comp">
+    <h2>Heading line</h2>
+    <h3>Heading subline</h3>
+    <div class="countdown-widget">
+        <div data-units="days">
+            <div class="couple">
+                <div class="flipper-stack"><div class="flipper" data-digit="X"></div></div>
+                <div class="flipper-stack"><div class="flipper" data-digit="X"></div></div>
+            </div>
+            <div class="label"></div>
+        </div>
+        <div data-units="hours">
+            <div class="couple">
+                <div class="flipper-stack"><div class="flipper" data-digit="X"></div></div>
+                <div class="flipper-stack"><div class="flipper" data-digit="X"></div></div>
+            </div>
+            <div class="label"></div>
+        </div>
+        <div data-units="minutes" class="always-visible">
+            <div class="couple">
+                <div class="flipper-stack"><div class="flipper" data-digit="X"></div></div>
+                <div class="flipper-stack"><div class="flipper" data-digit="X"></div></div>
+            </div>
+            <div class="label"></div>
+        </div>
+        <div data-units="seconds" class="always-visible">
+            <div class="couple">
+                <div class="flipper-stack"><div class="flipper" data-digit="X"></div></div>
+                <div class="flipper-stack"><div class="flipper" data-digit="X"></div></div>
+            </div>
+            <div class="label"></div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    var queryParam,
+        slice = [].slice;
+
+    window.ASAP || (window.ASAP = (function() {
+        var callall, fns;
+        fns = [];
+        callall = function() {
+            var f, results;
+            results = [];
+            while (f = fns.shift()) {
+                results.push(f());
+            }
+            return results;
+        };
+        if (document.addEventListener) {
+            document.addEventListener('DOMContentLoaded', callall, false);
+            window.addEventListener('load', callall, false);
+        } else if (document.attachEvent) {
+            document.attachEvent('onreadystatechange', callall);
+            window.attachEvent('onload', callall);
+        }
+        return function(fn) {
+            fns.push(fn);
+            if (document.readyState === 'complete') {
+                return callall();
+            }
+        };
+    })());
+
+    window.log || (window.log = function() {
+        if (window.console && window.DEBUG) {
+            if (typeof console.group === "function") {
+                console.group(window.DEBUG);
+            }
+            if (arguments.length === 1 && Array.isArray(arguments[0]) && console.table) {
+                console.table.apply(window, arguments);
+            } else {
+                console.log.apply(window, arguments);
+            }
+            return typeof console.groupEnd === "function" ? console.groupEnd() : void 0;
+        }
+    });
+
+    window.trouble || (window.trouble = function() {
+        var ref;
+        if (window.console) {
+            if (window.DEBUG) {
+                if (typeof console.group === "function") {
+                    console.group(window.DEBUG);
+                }
+            }
+            if ((ref = console.warn) != null) {
+                ref.apply(window, arguments);
+            }
+            if (window.DEBUG) {
+                return typeof console.groupEnd === "function" ? console.groupEnd() : void 0;
+            }
+        }
+    });
+
+    window.preload || (window.preload = function(what, fn) {
+        var lib;
+        if (!Array.isArray(what)) {
+            what = [what];
+        }
+        return $.when.apply($, (function() {
+            var i, len1, results;
+            results = [];
+            for (i = 0, len1 = what.length; i < len1; i++) {
+                lib = what[i];
+                results.push($.ajax(lib, {
+                    dataType: 'script',
+                    cache: true
+                }));
+            }
+            return results;
+        })()).done(function() {
+            return typeof fn === "function" ? fn() : void 0;
+        });
+    });
+
+    window.queryParam || (window.queryParam = queryParam = function(p, nocase) {
+        var k, params, params_kv;
+        params_kv = location.search.substr(1).split('&');
+        params = {};
+        params_kv.forEach(function(kv) {
+            var k_v;
+            k_v = kv.split('=');
+            return params[k_v[0]] = k_v[1] || '';
+        });
+        if (p) {
+            if (nocase) {
+                for (k in params) {
+                    if (k.toUpperCase() === p.toUpperCase()) {
+                        return decodeURIComponent(params[k]);
+                    }
+                }
+                return void 0;
+            } else {
+                return decodeURIComponent(params[p]);
+            }
+        }
+        return params;
+    });
+
+    String.prototype.zeroPad = function(len, c) {
+        var s;
+        s = '';
+        c || (c = '0');
+        len || (len = 2);
+        len -= this.length;
+        while (s.length < len) {
+            s += c;
+        }
+        return s + this;
+    };
+
+    Number.prototype.zeroPad = function(len, c) {
+        return String(this).zeroPad(len, c);
+    };
+
+    Number.prototype.pluralForm = function(root, suffix_list) {
+        return root + (this >= 11 && this <= 14 ? suffix_list[0] : suffix_list[this % 10]);
+    };
+
+    Number.prototype.asDays = function() {
+        var d;
+        d = Math.floor(this);
+        return d.pluralForm('д', ['ней', 'ень', 'ня', 'ня', 'ня', 'ней', 'ней', 'ней', 'ней', 'ней']);
+    };
+
+    Number.prototype.asHours = function() {
+        var d;
+        d = Math.floor(this);
+        return d.pluralForm('час', ['ов', '', 'а', 'а', 'а', 'ов', 'ов', 'ов', 'ов', 'ов']);
+    };
+
+    Number.prototype.asMinutes = function() {
+        var d;
+        d = Math.floor(this);
+        return d.pluralForm('минут', ['', 'а', 'ы', 'ы', 'ы', '', '', '', '', '']);
+    };
+
+    Number.prototype.asSeconds = function() {
+        var d;
+        d = Math.floor(this);
+        return d.pluralForm('секунд', ['', 'а', 'ы', 'ы', 'ы', '', '', '', '', '']);
+    };
+
+    ASAP(function() {
+        return (function($, window) {
+            var Flipdown;
+            return Flipdown = (function() {
+                Flipdown.prototype.defaults = {
+                    momentX: moment().add({
+                        d: 2
+                    }),
+                    labels: true,
+                    overMessage: ''
+                };
+
+                function Flipdown(el, options) {
+                    this.options = $.extend({}, this.defaults, options);
+                    this.$el = $(el);
+                    this.init();
+                }
+
+                Flipdown.prototype.init = function() {
+                    return this;
+                };
+
+                Flipdown.prototype.tick = function() {
+                    var remains;
+                    remains = moment.duration(this.options.momentX.diff(moment()));
+                    if (remains.asSeconds() <= 0) {
+                        this.over();
+                        return this;
+                    }
+                    this.render(remains).then((function(_this) {
+                        return function() {
+                            return _this.rafh = requestAnimationFrame(function() {
+                                return _this.tick();
+                            });
+                        };
+                    })(this));
+                    return this;
+                };
+
+                Flipdown.prototype.start = function() {
+                    this.rafh = requestAnimationFrame((function(_this) {
+                        return function() {
+                            return _this.tick();
+                        };
+                    })(this));
+                    return this;
+                };
+
+                Flipdown.prototype.stop = function() {
+                    if (this.rafh) {
+                        cancelAnimationFrame(this.rafh);
+                    }
+                    return this;
+                };
+
+                Flipdown.prototype.over = function() {
+                    var msg_letters, pad;
+                    this.stop();
+                    if (this.options.overMessage) {
+                        msg_letters = this.options.overMessage.split('');
+                        pad = 8 - msg_letters.length;
+                        while (pad--) {
+                            msg_letters.unshift(' ');
+                        }
+                        this.render({
+                            days: function() {
+                                return (msg_letters[0] || ' ') + (msg_letters[1] || ' ');
+                            },
+                            hours: function() {
+                                return (msg_letters[2] || ' ') + (msg_letters[3] || ' ');
+                            },
+                            minutes: function() {
+                                return (msg_letters[4] || ' ') + (msg_letters[5] || ' ');
+                            },
+                            seconds: function() {
+                                return (msg_letters[6] || ' ') + (msg_letters[7] || ' ');
+                            }
+                        }).then((function(_this) {
+                            return function() {
+                                return _this.$el.trigger('time-is-up');
+                            };
+                        })(this));
+                        this.$el.find('.label').css({
+                            visibility: 'hidden'
+                        });
+                    } else {
+                        this.$el.trigger('time-is-up');
+                    }
+                    return this;
+                };
+
+                Flipdown.prototype.render = function(remains) {
+                    var hit_non_zero_rank, promise;
+                    hit_non_zero_rank = false;
+                    promise = $.Deferred();
+                    this.$el.find('[data-units]').each((function(_this) {
+                        return function(idx, el) {
+                            var $stacks, $units, digits2set, units, value, value2set;
+                            $units = $(el);
+                            units = $units.attr('data-units');
+                            value = Number($units.attr('data-value'));
+                            value2set = remains[units]();
+                            hit_non_zero_rank || (hit_non_zero_rank = value2set !== 0);
+                            if (!hit_non_zero_rank) {
+                                $units.addClass('insignificant');
+                            }
+                            if (value2set !== value) {
+                                $units.attr('data-value', value2set);
+                                digits2set = value2set.zeroPad(2);
+                                $stacks = $units.find('.flipper-stack');
+                                $.when(_this.flipStack2($stacks.eq(0), digits2set[0]), _this.flipStack2($stacks.eq(1), digits2set[1])).then(function() {
+                                    return promise.resolve();
+                                });
+                                try {
+                                    if (_this.options.labels) {
+                                        return $units.find('.label').text(value2set[{
+                                            days: 'asDays',
+                                            hours: 'asHours',
+                                            minutes: 'asMinutes',
+                                            seconds: 'asSeconds'
+                                        }[units]]());
+                                    }
+                                } catch (error) {}
+                            } else {
+                                return promise.resolve();
+                            }
+                        };
+                    })(this));
+                    return promise;
+                };
+
+                Flipdown.prototype.flipStack2 = function(stack_el, n) {
+                    var $last_flipper, $new_flipper, $recent_flippers, $stack_el, promise;
+                    $stack_el = $(stack_el);
+                    promise = $.Deferred();
+                    $recent_flippers = $stack_el.children();
+                    $last_flipper = $recent_flippers.eq(-1);
+                    if ($last_flipper.attr('data-digit') !== String(n)) {
+                        $new_flipper = $("<div class='flipper flip-in' data-digit='" + n + "'></div>");
+                        $stack_el.append($new_flipper);
+                        $last_flipper.one('transitionend transitioncancel', function(e) {
+                            return $new_flipper.one('transitionend transitioncancel', function() {
+                                $recent_flippers.remove();
+                                return promise.resolve();
+                            }).removeClass('flip-in');
+                        }).addClass('flip-out');
+                    } else {
+                        promise.resolve();
+                    }
+                    return promise;
+                };
+
+                $.fn.extend({
+                    Flipdown: function() {
+                        var args, option;
+                        option = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+                        return this.each(function() {
+                            var $this, data;
+                            $this = $(this);
+                            data = $this.data('Flipdown');
+                            if (!data) {
+                                $this.data('Flipdown', (data = new Flipdown(this, option)));
+                            }
+                            if (typeof option === 'string') {
+                                return data[option].apply(data, args);
+                            }
+                        });
+                    }
+                });
+
+                return Flipdown;
+
+            })();
+        })(window.jQuery, window);
+    });
+
+    ASAP(function() {
+        // window.$countdown = $('.countdown-widget').Flipdown();
+        window.$countdown = $('.countdown-widget').Flipdown({ momentX: moment().add({s:10}), overMessage: 'ВСЕ!' });
+        return $countdown.on('time-is-up', function() {
+            return 1;
+        }).Flipdown('start');
+    });
+
+</script>
+</body>
+</html>
